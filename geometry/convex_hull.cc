@@ -25,8 +25,7 @@ bool convexHull_UL(vector<point> points, vector<point> &hull) {
     cout << pt << ",";
   cout << " " << endl;
 
-  hull.push_back(points.size() - 2);
-  for (int i = points.size() - 3, upper_size = points.size(); i >= 0; i--) {
+  for (int i = points.size() - 2, upper_size = points.size(); i >= 0; i--) {
     while (hull.size() > upper_size &&
            sideOfLine(hull[hull.size() - 2], points[i],
                       hull[hull.size() - 1]) == -1)
