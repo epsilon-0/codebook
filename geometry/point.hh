@@ -87,6 +87,7 @@ point project(const point &p, const point &a) {
 }
 
 int sideOfLine(point &a, point &b, point &p) {
+  // returns which side p is of the line a->b
   double theta = angle(a, b, p);
   if (fabs(theta) < eps || fabs(theta - pi) < eps)
     return 0;
