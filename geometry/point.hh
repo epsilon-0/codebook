@@ -78,6 +78,18 @@ bool intersect(const point &a, const point &b, const point &p, const point &q,
   return true;
 }
 
+bool do_segments_intersect(const point &a, const point &b, const point &p,
+                           const point &q) {
+  point z;
+  intersect(a, b, p, q, z);
+  if (z.x() != inf) {
+    double t = length(z - b) / length(a - b);
+    if (t >= 0 && t <= 1)
+      return true;
+  }
+  return false;
+}
+
 point projectAt(const point &p, const point &a, const point &b) {
   return a + (b - a) * dot(p - a, b - a) / length(b - a);
 }
@@ -94,6 +106,11 @@ int sideOfLine(point &a, point &b, point &p) {
   else if (theta > pi)
     return 1; // to the left
   return -1;  // on the right
+}
+
+void bisector(const point &a, const point &b, point &x, point &y) {
+  x = (a + b) / 2.0;
+  y = rotateAt(x, b, pi / 2.0);
 }
 
 #endif // _POINT_INCLUDED_
