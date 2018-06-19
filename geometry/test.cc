@@ -29,10 +29,8 @@ int main() {
     }
     sort(points.begin(), points.end(), xComp());
     points.erase(unique(points.begin(), points.end()), points.end());
-    for (auto p : points)
-      cout << p << endl;
     vector<point> hull;
-    bool val = convexHull_MC(points, hull);
+    bool val = monotone_chain(points, hull);
 
     if (!val) {
       cout << -1 << endl;

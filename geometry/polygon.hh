@@ -7,7 +7,7 @@
 
 using namespace std;
 
-bool convexHull_MC(vector<point> points, vector<point> &hull) {
+bool monotone_chain(vector<point> points, vector<point> &hull) {
   // assume that no three are collinear
   if (points.size() < 3) {
     hull.push_back(points[0]);
@@ -34,17 +34,6 @@ bool convexHull_MC(vector<point> points, vector<point> &hull) {
     hull.push_back(points[i]);
   }
   hull.pop_back();
-  return true;
-}
-
-bool convexHull_DC(vector<point> points, vector<point> &hull) {
-  if (points.size() < 3) {
-    hull.push_back(points[0]);
-    hull.push_back(points[1]);
-    hull.push_back(points[0]);
-    return false;
-  }
-
   return true;
 }
 
