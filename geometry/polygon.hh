@@ -64,24 +64,12 @@ int is_convex(const vector<point> &polygon) {
   return 1;
 }
 
-double trap(const point &a, const point &b) {
-  return (b.x() - a.x()) * (b.y() + a.y()) / 2;
-}
-
 double area(const vector<point> &polygon) {
   double total = 0.0;
   int n = polygon.size();
   for (int i = 0; i < n; i++)
     total += trap(polygon[i], polygon[(i + 1) % n]);
   return fabs(total);
-}
-
-double triangle_area(const point &a, const point &b, const point &c) {
-  return fabs(trap(a, b) + trap(b, c) + trap(c, a));
-}
-
-double height(const point &a, const point &b, const point &p) {
-  return triangle_area(a, b, p) / dist(a, b) * 2.0;
 }
 
 #endif // _POLYGON_
