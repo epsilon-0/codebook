@@ -1,7 +1,6 @@
 **/NUL
-.*test.*
+**/test.cc
 *.exe
 *.out
 *.o
 *.in
-test..*
