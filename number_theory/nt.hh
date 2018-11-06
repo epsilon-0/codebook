@@ -1,8 +1,8 @@
 #ifndef _NT_
 #define _NT_
 
-#include <set>
 #include <map>
+#include <set>
 
 using namespace std;
 
@@ -19,12 +19,13 @@ inline long long inverse(long long a, long long mod) {
 
 template <class num_t = long long>
 inline num_t modPow(num_t a, num_t n, num_t mod) {
-  if (n == 0)
-    return 1;
-  num_t ans = modPow(a, n / 2, mod);
-  ans = (ans * ans) % mod;
-  if (n & 1)
-    ans = (ans * a) % mod;
+  num_t ans = 1;
+  while (n) {
+    if (n & 1)
+      ans = (ans * a) % mod;
+    n >>= 1;
+    a = (a * a) % mod;
+  }
   return ans;
 }
 
@@ -71,18 +72,18 @@ set<int> factorization(int n) {
   return facs[n];
 }
 
-map<int, int> prime_factorization(int n){
+map<int, int> prime_factorization(int n) {
   map<int, int> pFactors;
-  if(n == 1)
+  if (n == 1)
     return pFactors;
   int p = spf[n], k = n;
-  while(k % spf[n] == 0){
+  while (k % spf[n] == 0) {
     k /= spf[n];
     pFactors[spf[n]]++;
   }
   map<int, int> recFactors = prime_factorization(k);
-  for(auto it : recFactors)
-    pFactors[it.first]= it.second;
+  for (auto it : recFactors)
+    pFactors[it.first] = it.second;
   return pFactors;
 }
 
