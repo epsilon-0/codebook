@@ -5,104 +5,45 @@
 // Modular FFT and multiplication of polynomials
 
 #include "nt.hh"
-
-typedef long long ll;
+#include <bits/stdc++.h>
 
 // set these to appropriate values in contest
-const int P = 663224321;
-const int mod = 663224321;
-const ll g = 3; // generator for cyclic group
+const long long P = 663224321;
+const long long MOD = 663224321;
+const long long g = 3; // generator for cyclic group
 
-void Add(ll &x, ll y) {
-  x += y;
-  if (x >= mod)
-    x -= mod;
-}
-
-void Mul(ll &x, ll y) {
-  x *= y;
-  if (x >= mod)
-    x %= mod;
-}
-
-ll qpow(ll a, ll b) {
-  ll ret = 1;
-  while (b) {
-    if (b & 1)
-      Mul(ret, a);
-    b >>= 1;
-    Mul(a, a);
-  }
-  return ret;
-}
-
-inline ll Inv(ll a) { return qpow(a, mod - 2); }
-
-struct NTT {
-  int rev[maxn], dig[maxn], N, L;
-
-  void init_rev(int n) {
-    for (N = 1, L = 0; N <= n; N <<= 1, L++)
-      ;
-    memset(dig, 0, sizeof(int) * (L + 1));
-    for (int i = 0; i < N; i++) {
-      rev[i] = 0;
-      int len = 0;
-      for (int t = i; t; t >>= 1)
-        dig[len++] = t & 1;
-      for (int j = 0; j < L; j++)
-        rev[i] = (rev[i] << 1) | dig[j];
-    }
+void ntt(vector<long long> &a, bool invert) {
+  // invert tells to calculate the inverse fft
+  int n = a.size();
+  // apply the reverse bit permutation
+  for (int i = 1, j = 0; i < n; i++) {
+    int bit = n >> 1;
+    for (; j >= bit; bit >>= 1)
+      j -= bit;
+    j += bit;
+    if (i < j)
+      swap(a[i], a[j]);
   }
 
-  void DFT(ll a[], int flag) {
-    for (int i = 0; i < N; i++)
-      if (i < rev[i])
-        swap(a[i], a[rev[i]]);
-    for (int l = 2; l <= N; l <<= 1) {
-      ll wn;
-      if (flag == 1)
-        wn = qpow(g, (P - 1) / l);
-      else
-        wn = qpow(g, P - 1 - (P - 1) / l);
-      for (int k = 0; k < N; k += l) {
-        ll w = 1;
-        ll x, y;
-        for (int j = k; j < k + l / 2; j++) {
-          x = a[j];
-          y = a[j + l / 2] * w % P;
-          a[j] = (x + y) % P;
-          a[j + l / 2] = (x - y + P) % P;
-          Mul(w, wn);
-        }
+  for (int len = 2; len <= n; len <<= 1) {
+    long long mul_factor = modPow<long long>(g, len, MOD);
+    for (int i = 0; i < n; i += len) {
+      long long now = 1;
+      for (int j = 0; j < len / 2; j++) {
+        long long u = a[i + j], v = (a[i + j + len / 2] * now) % MOD;
+        a[i + j] = (u + v) % MOD;
+        a[i + j + len / 2] = (u - v + MOD) % MOD;
+        now = (now * mul_factor) % MOD;
       }
     }
-    if (flag == -1) {
-      ll inv = Inv(N);
-      for (int i = 0; i < N; i++)
-        a[i] = a[i] * inv % P;
+  }
+
+  long long inv = inverse(n, MOD);
+  if (invert) {
+    for (int i = 0; i < n; i++) {
+      a[i] = (a[i] * inv) % MOD;
     }
   }
-} ntt;
-
-void poly_inv(int deg, ll *a, ll *b, ll *c) {
-  if (deg == 1) {
-    b[0] = Inv(a[0]);
-    return;
-  }
-  poly_inv((deg + 1) >> 1, a, b, c);
-  ntt.init_rev(deg << 1);
-  for (int i = 0; i < deg; i++)
-    c[i] = a[i];
-  for (int i = deg; i < ntt.N; i++)
-    c[i] = 0;
-  ntt.DFT(c, 1);
-  ntt.DFT(b, 1);
-  for (int i = 0; i < ntt.N; i++)
-    b[i] = ((2LL - c[i] * b[i] % P) + P) % P * b[i] % P;
-  ntt.DFT(b, -1);
-  for (int i = deg; i < ntt.N; i++)
-    b[i] = 0;
 }
 
 #endif // _NTT_

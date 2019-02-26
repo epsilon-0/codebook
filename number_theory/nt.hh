@@ -6,9 +6,6 @@
 
 using namespace std;
 
-const int maxn = (int)(1e5) + 10;
-const long long MOD = (1e9) + 7;
-
 inline long long gcd(long long a, long long b) {
   return (b == 0) ? a : gcd(b, a % b);
 }
@@ -29,8 +26,9 @@ inline num_t modPow(num_t a, num_t n, num_t mod) {
   return ans;
 }
 
+const int maxn = (int)(1e5) + 10;
 long long choose[maxn][maxn] = {0};
-void chooseINIT() {
+void chooseINIT(long long MOD) {
   for (int i = 0; i < maxn; i++)
     choose[i][0] = choose[i][i] = 1;
   for (int i = 0; i < maxn; i++)

@@ -8,36 +8,45 @@
 
 using namespace std;
 
-typedef complex<double> cd;
+typedef complex<double> point;
 
 // evaluate vector a on the n complex roots of unity
-vector<cd> fft(vector<cd> &a) {
+void fft(vector<point> &a, bool invert) {
+  // invert tells to calculate the inverse fft
   int n = a.size();
 
-  if (n == 1)
-    return vector<cd>(1, a[0]);
-
-  vector<cd> w(n);
-  for (int i = 0; i < n; i++) {
-    double alpha = 2 * M_PI * i / n;
-    w[i] = cd(cos(alpha), sin(alpha));
+  for (int i = 1, j = 0; i < n; i++) {
+    int bit = n >> 1;
+    for (; j >= bit; bit >>= 1)
+      j -= bit;
+    j += bit;
+    if (i < j)
+      swap(a[i], a[j]);
   }
 
-  vector<cd> A0(n / 2), A1(n / 2);
-  for (int i = 0; i < n / 2; i++) {
-    A0[i] = a[i * 2];
-    A1[i] = a[i * 2 + 1];
+  for (int len = 2; len <= n; len <<= 1) {
+    double ang = (2.0 * M_PI / len) * (invert ? -1 : 1);
+
+    point mul_factor(cos(ang), sin(ang));
+
+    for (int i = 0; i < n; i += len) {
+      point now(1, 0);
+
+      for (int j = 0; j < len / 2; j++) {
+        point u = a[i + j], v = a[i + j + len / 2] * now;
+
+        a[i + j] = u + v;
+        a[i + j + len / 2] = u - v;
+        now *= mul_factor;
+      }
+    }
   }
 
-  vector<cd> y0 = fft(A0);
-  vector<cd> y1 = fft(A1);
-  vector<cd> y(n);
-
-  for (int k = 0; k < n / 2; k++) {
-    y[k] = y0[k] + w[k] * y1[k];
-    y[k + n / 2] = y0[k] - w[k] * y1[k];
+  if (invert) {
+    for (int i = 0; i < n; i++) {
+      a[i] /= point(n, 0);
+    }
   }
-  return y;
 }
 
 #endif // _FFT_
