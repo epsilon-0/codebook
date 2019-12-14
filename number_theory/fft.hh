@@ -1,7 +1,6 @@
 #ifndef _FFT_
 #define _FFT_
 
-#define _USE_MATH_DEFINES
 #include <cmath>
 #include <complex>
 #include <vector>
@@ -9,6 +8,7 @@
 using namespace std;
 
 typedef complex<double> point;
+const double pi = 3.14159265358979323846264338327950288419716939937510582;
 
 // evaluate vector a on the n complex roots of unity
 void fft(vector<point> &a, bool invert) {
@@ -25,7 +25,7 @@ void fft(vector<point> &a, bool invert) {
   }
 
   for (int len = 2; len <= n; len <<= 1) {
-    double ang = (2.0 * M_PI / len) * (invert ? -1 : 1);
+    double ang = (2.0 * pi / len) * (invert ? -1 : 1);
 
     point mul_factor(cos(ang), sin(ang));
 
