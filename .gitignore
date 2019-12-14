@@ -1,5 +1,5 @@
 **/NUL
-**/test.cc
+**/test*.cc
 *.exe
 *.out
 *.o
